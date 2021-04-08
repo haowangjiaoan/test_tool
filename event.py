@@ -55,19 +55,20 @@ class EeventServerHandler(tornado.web.RequestHandler):
             print(str(r['eventType'])+'【陌生人事件】'+str(r['eventTime']))
             for i in range(0,len(r['eventDetail']['images'])):
                 if 'data' in r['eventDetail']['images'][i] and r['eventDetail']['images'][i]['picType']=='face' and flag==1:
-                    with open(path+'/face/'+r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg', 'wb') as f:
+                    temp_key=str(int(float(time.time()*10000000))) +'.jpg'
+                    with open(path+'/face/'+temp_key, 'wb') as f:
                         f.write(base64.b64decode(r['eventDetail']['images'][i]['data']))
                         faceNum=faceNum+1
                         f.close()
                     temp={}
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']={}
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['bbox']=min(r['eventDetail']['faceInfo']['faceRec']['position']['width'],r['eventDetail']['faceInfo']['faceRec']['position']['height'])
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['quality']=r['eventDetail']['faceInfo']['faceRec']['attributes']['isFace']['confidence']
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['confidence']=r['eventDetail']['faceInfo']['faceRec']['position']['confidence']
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['blur']=r['eventDetail']['faceInfo']['faceRec']['qualities']['blur']
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['yaw']=r['eventDetail']['faceInfo']['faceRec']['qualities']['yaw']
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['pitch']=r['eventDetail']['faceInfo']['faceRec']['qualities']['pitch']
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['roll']=r['eventDetail']['faceInfo']['faceRec']['qualities']['roll']
+                    temp[temp_key]={}
+                    temp[temp_key]['bbox']=min(r['eventDetail']['faceInfo']['faceRec']['position']['width'],r['eventDetail']['faceInfo']['faceRec']['position']['height'])
+                    temp[temp_key]['quality']=r['eventDetail']['faceInfo']['faceRec']['attributes']['isFace']['confidence']
+                    temp[temp_key]['confidence']=r['eventDetail']['faceInfo']['faceRec']['position']['confidence']
+                    temp[temp_key]['blur']=r['eventDetail']['faceInfo']['faceRec']['qualities']['blur']
+                    temp[temp_key]['yaw']=r['eventDetail']['faceInfo']['faceRec']['qualities']['yaw']
+                    temp[temp_key]['pitch']=r['eventDetail']['faceInfo']['faceRec']['qualities']['pitch']
+                    temp[temp_key]['roll']=r['eventDetail']['faceInfo']['faceRec']['qualities']['roll']
                     #faceList.append(temp)
                     with open(path+'/data/faceList.txt', 'a+', encoding='utf-8') as f1:
                         f1.write(str(temp)+';' + '\n')
@@ -84,15 +85,16 @@ class EeventServerHandler(tornado.web.RequestHandler):
             print(str(r['eventType'])+'【机动车事件】'+str(r['eventTime']))
             for i in range(0,len(r['eventDetail']['images'])):
                 if 'data' in r['eventDetail']['images'][i] and r['eventDetail']['images'][i]['picType']=='crop' and flag==1:
-                    with open(path+'/vehicle/'+r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg', 'wb') as f:
+                    temp_key=str(int(float(time.time()*10000000))) +'.jpg'
+                    with open(path+'/vehicle/'+temp_key, 'wb') as f:
                         f.write(base64.b64decode(r['eventDetail']['images'][i]['data']))
                         vehicleNum=vehicleNum+1
                         f.close()
                     temp={}
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']={}
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['bbox']=min(r['eventDetail']['info']['bbox']['width'],r['eventDetail']['info']['bbox']['height'])
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['quality']=r['eventDetail']['info']['quality']
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['confidence']=r['eventDetail']['info']['bbox']['confidence']
+                    temp[temp_key]={}
+                    temp[temp_key]['bbox']=min(r['eventDetail']['info']['bbox']['width'],r['eventDetail']['info']['bbox']['height'])
+                    temp[temp_key]['quality']=r['eventDetail']['info']['quality']
+                    temp[temp_key]['confidence']=r['eventDetail']['info']['bbox']['confidence']
                     #vehicleList.append(temp)
                     with open(path+'/data/vehicleList.txt', 'a+', encoding='utf-8') as f2:
                         f2.write(str(temp)+';' + '\n')
@@ -107,15 +109,16 @@ class EeventServerHandler(tornado.web.RequestHandler):
             print(str(r['eventType'])+'【行人事件】'+str(r['eventTime']))
             for i in range(0,len(r['eventDetail']['images'])):
                 if 'data' in r['eventDetail']['images'][i] and r['eventDetail']['images'][i]['picType']=='crop' and flag==1:
-                    with open(path+'/pedestrian/'+r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg', 'wb') as f:
+                    temp_key=str(int(float(time.time()*10000000))) +'.jpg'
+                    with open(path+'/pedestrian/'+temp_key, 'wb') as f:
                         f.write(base64.b64decode(r['eventDetail']['images'][i]['data']))
                         pedestrianNum=pedestrianNum+1
                         f.close()
                     temp={}
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']={}
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['bbox']=min(r['eventDetail']['info']['bbox']['width'],r['eventDetail']['info']['bbox']['height'])
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['quality']=r['eventDetail']['info']['quality']
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['confidence']=r['eventDetail']['info']['bbox']['confidence']
+                    temp[temp_key]={}
+                    temp[temp_key]['bbox']=min(r['eventDetail']['info']['bbox']['width'],r['eventDetail']['info']['bbox']['height'])
+                    temp[temp_key]['quality']=r['eventDetail']['info']['quality']
+                    temp[temp_key]['confidence']=r['eventDetail']['info']['bbox']['confidence']
                     #pedestrianList.append(temp)
                     with open(path+'/data/pedestrianList.txt', 'a+', encoding='utf-8') as f3:
                         f3.write(str(temp)+';' + '\n')
@@ -130,15 +133,16 @@ class EeventServerHandler(tornado.web.RequestHandler):
             print(str(r['eventType'])+'【非机动车事件】'+str(r['eventTime']))
             for i in range(0,len(r['eventDetail']['images'])):
                 if 'data' in r['eventDetail']['images'][i] and r['eventDetail']['images'][i]['picType']=='crop' and flag==1:
-                    with open(path+'/bicycle/'+r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg', 'wb') as f:
+                    temp_key=str(int(float(time.time()*10000000))) +'.jpg'
+                    with open(path+'/bicycle/'+temp_key, 'wb') as f:
                         f.write(base64.b64decode(r['eventDetail']['images'][i]['data']))
                         bicycleNum=bicycleNum+1
                         f.close()
                     temp={}
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']={}
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['bbox']=min(r['eventDetail']['info']['bbox']['width'],r['eventDetail']['info']['bbox']['height'])
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['quality']=r['eventDetail']['info']['quality']
-                    temp[r['eventTime'].replace(' ', '').replace(':', '').replace('-', '') +'.jpg']['confidence']=r['eventDetail']['info']['bbox']['confidence']
+                    temp[temp_key]={}
+                    temp[temp_key]['bbox']=min(r['eventDetail']['info']['bbox']['width'],r['eventDetail']['info']['bbox']['height'])
+                    temp[temp_key]['quality']=r['eventDetail']['info']['quality']
+                    temp[temp_key]['confidence']=r['eventDetail']['info']['bbox']['confidence']
                     #bicycleList.append(temp)
                     with open(path+'/data/bicycleList.txt', 'a+', encoding='utf-8') as f4:
                         f4.write(str(temp)+';' + '\n')

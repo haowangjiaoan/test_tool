@@ -297,6 +297,44 @@ def dataOpenApi(devip,text_cb):
         ErroResult='请求错误:'+traceback.format_exc()
     if flag==False:
         text_cb(devip+' '+ErroResult+'   \n', 'fail')
+def dataCloseApi(devip,text_cb):
+    text_cb(devip+' 关闭event接口......\n', 'detail')
+
+    try:
+        flag=True
+        hostname = socket.gethostname()
+        addrs = socket.getaddrinfo(socket.gethostname(),None)
+        for item in addrs:
+            if (':' not in item[4][0]) and (item[4][0].split('.')[0]==devip.split('.')[0]) and (item[4][0].split('.')[1]==devip.split('.')[1]) :
+                ipaddr=item[4][0]
+        if ':' in devip:
+            rLogin=requests.post(url='http://'+devip.split(':')[0]+'/api/a/login', json={'username': 'admin', 'password': 'B32FA6018771638F277F0BE418708C10'})
+            result=requests.put(url='http://'+devip+'/api/system/config/eventserver', json={"enabled":False,"server":"http://"+ipaddr+":8888","user":"haomuL","passwd":"abc@Dgsh"},
+                                headers={'Content-Type':'application/json;charset=utf-8','Authorization':rLogin.json()['data']['token']})
+        else :
+            rLogin=requests.post(url='http://'+devip.split(':')[0]+'/api/login', json={'userName': 'admin', 'password': '27a3388aedc1dfaa7a94e7223a0fa1c1'})
+            result=requests.put(url='http://'+devip+'/api/system/config/eventserver', json={"enabled":False,"server":"http://"+ipaddr+":8888","user":"haomuL","passwd":"abc@Dgsh"},
+                                headers={'Content-Type':'application/json;charset=utf-8','Authorization':rLogin.json()['data']['token']})
+        if result.json()['code']==200000:
+            result=json.dumps(json.loads(result.text), sort_keys=True, indent=4, separators=(', ', ': '), ensure_ascii=False)
+            text_cb('\n'+result+'\n', 'pass')
+        else:
+            result=json.dumps(json.loads(result.text), sort_keys=True, indent=4, separators=(', ', ': '), ensure_ascii=False)
+            text_cb('\n'+result+'\n', 'fail')
+    except exceptions.ConnectionError as e:
+        flag=False
+        ErroResult='连接错误：'+str(e.args[0].reason)
+    except exceptions.Timeout as e:
+        flag=False
+        ErroResult='请求超时：'+str(e.message)
+    except exceptions.HTTPError as e:
+        flag=False
+        ErroResult='http请求错误:'+str(e.message)
+    except Exception as e:
+        flag=False
+        ErroResult='请求错误:'+traceback.format_exc()
+    if flag==False:
+        text_cb(devip+' '+ErroResult+'   \n', 'fail')
 def dataCapture(devip,faceFlag,pedestrianFlag,vehicleFlag,bicycleFlag,path,num,text_cb):
     text_cb(devip+' 采集参数送达中......\n', 'detail')
     hostname = socket.gethostname()
@@ -341,7 +379,7 @@ def dataCapture(devip,faceFlag,pedestrianFlag,vehicleFlag,bicycleFlag,path,num,t
             resultJson=result.json()
             if resultJson['code']==200000:
                 result=json.dumps(resultJson, sort_keys=True, indent=4, separators=(', ', ': '), ensure_ascii=False)
-                results='face:'+str(resultJson['faceNum'])+' pedestrian:'+str(resultJson['pedestrianNum'])+' vehicle:'+str(resultJson['vehicleNum'])+' bicycle:'+str(resultJson['bicycleNum'])
+                results='face:'+str(resultJson['faceNum'])+'   pedestrian:'+str(resultJson['pedestrianNum'])+'   vehicle:'+str(resultJson['vehicleNum'])+'   bicycle:'+str(resultJson['bicycleNum'])
                 text_cb(' '+results+'     \n', 'detail')
             else:
                 result=json.dumps(result, sort_keys=True, indent=4, separators=(', ', ': '), ensure_ascii=False)
@@ -438,8 +476,8 @@ def face(path,flag,text_cb):
             index=index+1
         if not os.path.exists(path+'/result/'+types+'/'):
             os.makedirs(path+'/result/'+types+'/')
-        toImage.save(path+'/result/'+types+'/'+flags+'.png')
-        text_cb(flag+'参数排序完成，排序图片保存路径为：'+path+'/result/'+types+'/'+flags+'.png  \n', 'pass')
+        toImage.save(path+'/result/'+types+'/'+types+'_'+flags+'.png')
+        text_cb(flag+'参数排序完成，排序图片保存路径为：'+path+'/result/'+types+'/'+types+'_'+flags+'.png  \n', 'pass')
     except Exception as e:
         text_cb('运行错误:'+traceback.format_exc()+'   \n', 'fail')
 def face2(path,flag,text_cb):
@@ -480,9 +518,9 @@ def face2(path,flag,text_cb):
         #plt.show()
         if not os.path.exists(path+'/result/'+types+'/'):
             os.makedirs(path+'/result/'+types+'/')
-        savefig(path+'/result/'+types+'/'+flag+'.png')
+        savefig(path+'/result/'+types+'/'+types+'_'+flag+'.png')
         #toImage.save(path+'/result/'+types+'/'+flags+'.png')
-        text_cb(flag+'参数关系绘制完成，图片保存路径为：'+path+'/result/'+types+'/'+flag+'.png    \n', 'pass')
+        text_cb(flag+'参数关系绘制完成，图片保存路径为：'+path+'/result/'+types+'/'+types+'_'+flag+'.png    \n', 'pass')
     except Exception as e:
         text_cb('运行错误:'+traceback.format_exc()+'   \n', 'fail')
 def alert(path,devip,flag,num,text_cb):

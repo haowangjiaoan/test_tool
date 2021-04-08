@@ -16,6 +16,7 @@ import time
 import event
 import os
 from multiprocessing import Process
+#import PyQt5.sip
 
 
 class toolUI(object):
@@ -97,6 +98,7 @@ class toolUI(object):
         self.dataLabel = Label(self.dataFrame, text='算法数据收集',width=11,foreground='blue',anchor='e')
         self.dataDeviceIpCombo=ttk.Combobox(self.dataFrame,width=14)
         self.dataOpenApiButton = Button(self.dataFrame, command=self.dataOpenApi, text="打开设备接口",width=11)
+        self.dataCloseApiButton = Button(self.dataFrame, command=self.dataCloseApi, text="关闭设备接口",width=11)
         self.dataCheckVar1 = StringVar(value="1")
         self.dataCheckVar2 = StringVar(value="1")
         self.dataCheckVar3 = StringVar(value="1")
@@ -331,6 +333,7 @@ class toolUI(object):
         self.dataLabel.pack(side=const.LEFT, padx=5,pady=0, expand=const.NO)
         self.dataDeviceIpCombo.pack(side=const.LEFT,padx=5, pady=0, expand=const.NO)
         self.dataOpenApiButton.pack(side=const.LEFT, padx=5, pady=0, expand=const.NO)
+        self.dataCloseApiButton.pack(side=const.LEFT, padx=5, pady=0, expand=const.NO)
         self.dataCheck1.pack(side=const.LEFT, padx=5, pady=0, expand=const.NO)
         self.dataCheck2.pack(side=const.LEFT,padx=5, pady=0, expand=const.NO)
         self.dataCheck3.pack(side=const.LEFT,padx=5, pady=0, expand=const.NO)
@@ -431,6 +434,9 @@ class toolUI(object):
     def dataOpenApi(self):
         toolProc.thread_it(toolProc.dataOpenApi, (self.dataDeviceIpCombo.get(),self.text_cb))
         getConfig.setList(self.sshDeviceIpCombo.get(),'ipList.txt')
+    def dataCloseApi(self):
+        toolProc.thread_it(toolProc.dataCloseApi, (self.dataDeviceIpCombo.get(),self.text_cb))
+        getConfig.setList(self.sshDeviceIpCombo.get(),'ipList.txt')
     def dataCapture(self):
         toolProc.thread_it(toolProc.dataCapture, (self.dataDeviceIpCombo.get(),self.dataCheckVar1.get(),self.dataCheckVar2.get(),self.dataCheckVar3.get(),self.dataCheckVar4.get(),self.dataPathEntry.get(),self.dataNumEntry.get(),self.text_cb))
     def dataPathCapture(self):
@@ -480,7 +486,7 @@ def runUI():
     L.gui_arrang()
     mainloop()   
 if __name__ == '__main__':
-    runUI()
+    #runUI()
     
     proc=os.popen('netstat -ano |findstr "8888"').read()
     pidStrs=proc.split('\n')
